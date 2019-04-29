@@ -1,0 +1,9 @@
+{
+	"projectId": 1,
+	"project": "Test Project",
+	"priority": 30,
+	"startDate": "2019-04-22",
+	"endDate": "2019-04-23",
+	"totalTasks": 1,
+	"taskCompleted": 1
+}
