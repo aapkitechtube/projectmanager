@@ -1,0 +1,26 @@
+input[type="date"] {
+    align-items: center;
+    display: -webkit-inline-flex;
+    font-family: monospace;
+    overflow: hidden;
+    padding: 0;
+    -webkit-padding-start: 1px;
+}
+
+.table-bg {
+    background-color: lightgrey;
+    border-color: white;
+}
+
+.spacer {
+    margin-bottom: 30px;
+}
+.btn-light {
+    background-color: #d6d5d5;
+}
+.btn-light:hover {
+    background-color: #b4b4b4;
+}
+.error {
+    color: rgb(235, 26, 26)
+}

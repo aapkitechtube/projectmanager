@@ -1,0 +1,217 @@
+<div class="container">
+  <ngb-alert *ngIf="successMessage" type="secondary" (close)="successMessage = null" i18n="@@task.success.msg">{{ successMessage }}</ngb-alert>
+  <form class="mt-3" [formGroup]="taskForm" (ngSubmit)="addTask()">
+    <div class="form-group row">
+      <label for="project" class="col-sm-2 col-form-label" i18n="@@task.lbl.project">Project: </label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" formControlName="project"
+          [ngClass]="{ 'is-invalid': submitted && taskForm.controls.projectId.errors }">
+        <div *ngIf="submitted && taskForm.controls.projectId.errors" class="error"></div>
+        <div *ngIf="submitted && taskForm.controls.projectId.errors?.required" i18n="@@task.project.error" class="error">Project is required.</div>
+        <input type="hidden" [disabled]="isParent" formControlName="projectId">
+      </div>
+      <div class="btn-group col-sm-1" role="group">
+        <button type="button" class="btn btn-outline-secondary button5" i18n="@@task.btn.search" [disabled]="isParent || addButton == 'Update'" (click)="openProjectDialog()">Search</button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="task" class="col-sm-2 col-form-label" i18n="@@task.lbl.task">Task: </label>
+      <div class="col-sm-6">
+        <input type="text" class="form-control" formControlName="task"
+          [ngClass]="{ 'is-invalid': submitted && taskForm.controls.task.errors }">
+        <div *ngIf="submitted && taskForm.controls.task.errors" class="error"></div>
+        <div *ngIf="submitted && taskForm.controls.task.errors?.required" i18n="@@task.task.error" class="error">Task is required.</div>
+        <input type="hidden" formControlName="id">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="markParentTask" class="col-sm-2 col-form-label"></label>
+      <div class="col-sm-3">
+        <div class="col-sm custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" data-md-icheck formControlName="markParentTask"
+            id="markParentTask" (click)="handleParent($event.target)">
+          <label class="custom-control-label" for="markParentTask" i18n="@@task.lbl.chk.parenttask">Parent Task</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="priority" class="col-sm-2 col-form-label" i18n="@@task.lbl.priority">Priority: </label>
+      <div class="col-sm-6">
+        <div class="d-flex justify-content-left my-6">
+          <span class="font-weight-bold indigo-text mr-2 mt-1" i18n="@@task.lbl.0">0</span>
+          <div class="range-field w-100">
+            <input class="custom-range" [disabled]="isParent" type="range" min="0" max="30" formControlName="priority" />
+          </div>
+          <span class="font-weight-bold indigo-text ml-2 mt-1" i18n="@@task.lbl.30">30</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="parentTask" class="col-sm-2 col-form-label" i18n="@@task.lbl.parenttask">Parent Task: </label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" formControlName="parentTask"
+          [ngClass]="{ 'is-invalid': submitted && taskForm.controls.parentTask.errors }">
+        <div *ngIf="submitted && taskForm.controls.parentTask.errors" class="error"></div>
+        <div *ngIf="submitted && taskForm.controls.parentTask.errors?.required" class="error" i18n="@@task.parenttask.error">Parent task is required.</div>
+        <input type="hidden" formControlName="parentId">
+      </div>
+      <div class="btn-group col-sm-1" role="group">
+        <button type="button" class="btn btn-outline-secondary button5" [disabled]="isParent" (click)="openParentDialog()" i18n="@@task.parent.btn.search">Search</button>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="startDate" class="col-sm-2 col-form-label" i18n="@@task.lbl.startDate">Start Date: </label>
+      <div class="col-sm-2">
+        <input type="date" [disabled]="isParent" formControlName="startDate"
+          [ngClass]="{ 'is-invalid': submitted && taskForm.controls.startDate.errors }">
+        <div *ngIf="submitted && taskForm.controls.startDate.errors" class="error"></div>
+        <div *ngIf="submitted && taskForm.controls.startDate.errors?.required" class="error" i18n="@@task.startDate.error">Start Date is required.</div>
+      </div>
+      <label for="endDate" class="col-sm-2 col-form-label" i18n="@@task.lbl.endDate">End Date: </label>
+      <div class="col-sm-2">
+        <input type="date" [disabled]="isParent" formControlName="endDate"
+          [ngClass]="{ 'is-invalid': submitted && taskForm.controls.endDate.errors }">
+        <div *ngIf="submitted && taskForm.controls.endDate.errors" class="error"></div>
+        <div *ngIf="submitted && taskForm.controls.endDate.errors?.required" class="error" i18n="@@task.endDate.error">End Date is required.</div>
+      </div>
+    </div>
+    <div class="row">
+        <label class="col-sm-2 col-form-label"></label>
+        <div class="error col-sm-6" *ngIf="taskForm.hasError('loaddate')" i18n="@@task.date.error">
+          Start date must be before the end date
+        </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="user" class="col-sm-2 col-form-label" i18n="@@task.lbl.user">User: </label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" [disabled]="isParent" formControlName="user"
+          [ngClass]="{ 'is-invalid': submitted && taskForm.controls.userId.errors }">
+        <div *ngIf="submitted && taskForm.controls.userId.errors" class="error"></div>
+        <div *ngIf="submitted && taskForm.controls.userId.errors?.required" class="error" i18n="@@task.user.error">User is required.</div>
+        <input type="hidden" formControlName="userId">
+      </div>
+      <div class="btn-group col-sm-1" role="group">
+        <button type="button" class="btn btn-outline-secondary button5" [disabled]="isParent" (click)="openUserDialog()" i18n="@@task.user.btn.search">Search</button>
+      </div>
+    </div>
+
+    <div class="btn-toolbar col-sm-6 float-right" role="toolbar">
+      <div class="btn-group" role="group">
+        <button type="submit" class="btn btn-light" i18n="@@task.btn.add">{{ addButton }}</button>
+      </div>
+      <div>&nbsp;&nbsp;&nbsp;</div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-light" (click)="resetForm()" i18n="@@task.btn.reset">Reset</button>
+      </div>
+    </div>
+
+    <div class="backdrop" [ngStyle]="{'display':display}"></div>
+    <div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':display}">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <strong>{{ modalHeader }}</strong>
+            <button type="button" class="close" aria-label="Close" (click)="closeModalDialog()"><span
+                aria-hidden="true">&times;</span></button>
+          </div>
+
+          <!-- modal-body -->
+          <div class="modal-body">
+            <!-- Search Project Start-->
+            <div *ngIf="isSearchProject">
+              <div class="search-header">
+                <mat-form-field>
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search...">
+                </mat-form-field>
+              </div>
+
+              <div class="search-container">
+                <mat-table [dataSource]="dataSource" matSort>
+                  <ng-container matColumnDef="project">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Project </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.project}} </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="startDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Start Date </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{ row.startDate }} </mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="endDate">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> End Date </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{ row.endDate }} </mat-cell>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectProject(row)">
+                  </mat-row>
+                </mat-table>
+              </div>
+            </div>
+            <!-- Search project End-->
+
+            <!-- Search Parent Start-->
+            <div *ngIf="isSearchParent">
+              <div class="search-header">
+                <mat-form-field>
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search...">
+                </mat-form-field>
+              </div>
+              <div class="search-container">
+                <mat-table [dataSource]="dataSource" matSort>
+                  <ng-container matColumnDef="parentTask">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Parent Task </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.parentTask}} </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectParent(row)">
+                  </mat-row>
+                </mat-table>
+              </div>
+            </div>
+            <!-- Search Parent End-->
+
+            <!-- Search User Start-->
+            <div *ngIf="isSearchUser">
+              <div class="search-header">
+                <mat-form-field>
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search...">
+                </mat-form-field>
+              </div>
+              <div class="search-container">
+                <mat-table [dataSource]="dataSource" matSort>
+                  <ng-container matColumnDef="employeeId">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Employee ID </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.employeeId}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="firstName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> First Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.firstName}} </mat-cell>
+                  </ng-container>
+                  <ng-container matColumnDef="lastName">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </mat-header-cell>
+                    <mat-cell *matCellDef="let row"> {{row.lastName}} </mat-cell>
+                  </ng-container>
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectUser(row)">
+                  </mat-row>
+                </mat-table>
+              </div>
+            </div>
+            <!-- Search User End-->
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" (click)="closeModalDialog()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

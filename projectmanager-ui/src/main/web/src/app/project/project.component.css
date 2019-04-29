@@ -1,0 +1,145 @@
+/* Hide the browser's default checkbox */
+.customcheck input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 5px;
+}
+
+.customcheck:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+.customcheck input:checked ~ .checkmark {
+    background-color: #02cf32;
+    border-radius: 5px;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.customcheck input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.customcheck .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+input[type="date"] {
+    align-items: center;
+    display: -webkit-inline-flex;
+    font-family: monospace;
+    overflow: hidden;
+    padding: 0;
+    -webkit-padding-start: 1px;
+}
+
+.form-group input.ng-invalid.ng-touched, 
+.form-group input.ng-invalid:focus, 
+.form-group select.ng-invalid.ng-touched, 
+.form-group textarea.ng-invalid.ng-touched,
+.form-submit input.ng-invalid,
+.form-submit select.ng-invalid,
+.form-submit  textarea.ng-invalid
+{
+    border-color: #ff4c6a;
+}
+
+.invalid-feedback.form-error {
+    display: block;
+}
+.button5 {border-radius: 50%;}
+
+.ng-valid[required], .ng-valid.required  {
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    border-left: 10px solid rgb(218, 200, 43); /* yellow */
+}
+
+.backdrop {
+    background-color:rgba(0,0,0,0.6);
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100vh;
+}
+
+.table-bg {
+    background-color: lightgrey;
+}
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+  }
+  
+  .search-header {
+    min-height: 64px;
+    padding: 8px 24px 0;
+  }
+  
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  .mat-table {
+    overflow: auto;
+    max-height: 500px;
+    cursor: pointer;
+  }
+  .mat-row:hover {
+    background-color: lightgrey;
+  }
+  .btn-light {
+    background-color: #d6d5d5;
+  }
+  .btn-light:hover {
+    background-color: #b4b4b4;
+  }
+  .list-group {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    font-size: 14px;
+  }
+  .list-group-item {
+    list-style-type: none;
+    text-align: left;
+    float: left;
+    border: none;
+    background: transparent;
+  }
+  .list-bg {
+    background-color: #d6d5d5;
+  }
+  .error {
+    color: rgb(235, 26, 26)
+}
