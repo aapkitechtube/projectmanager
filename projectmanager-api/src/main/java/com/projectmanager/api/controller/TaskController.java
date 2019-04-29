@@ -59,9 +59,7 @@ public class TaskController {
 	@GetMapping("/tasksbyproject/{projectId}")
 	public ResponseEntity<List<Map<String, String>>> getTaskByProjectId(
 			@PathVariable(value = "projectId") Long projectId) throws ResourceNotFoundException {
-		
-		LOGGER.info("getTaskByProjectId(): projectId:", projectId);
-		
+				
 		List<Map<String, String>> tasks= taskRepository.findAllTasksByProjectId(projectId);
 		return ResponseEntity.ok().body(tasks);
 	}
@@ -99,6 +97,9 @@ public class TaskController {
 			@PathVariable(value = "id") Long taskId,
 			@PathVariable(value = "userId") Long userId,
 			@Valid @RequestBody Task taskDetails) throws ResourceNotFoundException {
+		
+		LOGGER.info("updateTask(): taskId:"+ taskId + " UserId:" + userId);
+		
 		Task task = taskRepository.findById(taskId)
 		        .orElseThrow(() -> new ResourceNotFoundException(Constants.TASK_404_MSG + taskId));
 				
@@ -108,23 +109,26 @@ public class TaskController {
 		task.setPriority(taskDetails.getPriority());
 		task.setParentId(taskDetails.getParentId());
 		final Task updatedTask = taskRepository.save(task);
-		
 		User user = userRepository.findUserByProjectIdAndTaskId(
-				task.getProjectId(), task.getId()).get(0);
+				taskDetails.getProjectId(), taskId).get(0);
+		
 		// Update existing user: if any
 		if (user.getId() != userId) {
-			user.setProjectId(0);
-			user.setTaskId(0);
-			userRepository.save(user);
+			userRepository.deleteById(user.getId());
+			// Update user
+			User updateUser = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException(Constants.USER_404_MSG + userId));
+			
+			// Assign the task to the user
+			User newAssigneduser = new User ();
+			newAssigneduser.setEmployeeId(updateUser.getEmployeeId());
+			newAssigneduser.setFirstName(updateUser.getFirstName());
+			newAssigneduser.setLastName(updateUser.getLastName());
+			newAssigneduser.setProjectId(updatedTask.getProjectId());
+			newAssigneduser.setTaskId(updatedTask.getId());
+			userRepository.save(newAssigneduser);
 		}
-		
-		// Update user
-		User updateUser = userRepository.findById(userId)
-			.orElseThrow(() -> new ResourceNotFoundException(Constants.USER_404_MSG + userId));
-		updateUser.setProjectId(updatedTask.getProjectId());
-		updateUser.setTaskId(updatedTask.getId());
-		userRepository.save(user);
-		
+				
 		return ResponseEntity.ok(updatedTask);
 	}
 
